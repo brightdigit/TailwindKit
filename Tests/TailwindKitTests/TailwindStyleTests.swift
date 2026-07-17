@@ -35,7 +35,7 @@ import Testing
 // imports Plot.
 @Suite internal struct TailwindStyleTests {
   @Test internal func emptyRendersEmptyString() {
-    #expect(TailwindStyle().rendered.isEmpty)
+    #expect(TailwindStyleBuilder().rendered.isEmpty)
     #expect(TW().rendered.isEmpty)
   }
 
@@ -90,7 +90,7 @@ import Testing
 
   @Test internal func flexAndGrid() {
     #expect(
-      TW.flex.flexCol.justify(.between).items(.stretch).rendered
+      TW.flex.flexDirection(.col).justify(.between).items(.stretch).rendered
         == "flex flex-col justify-between items-stretch"
     )
     #expect(TW.grid.gridCols(3).gap(6).rendered == "grid grid-cols-3 gap-6")
@@ -126,9 +126,9 @@ import Testing
 
   @Test internal func staticAndInstanceEntryPointsAgree() {
     // Leading-dot static entry vs. explicit-empty instance chain.
-    let flexGapViaInstance = TailwindStyle().flex.gap(4)
-    #expect(TailwindStyle.flex.gap(4) == flexGapViaInstance)
-    let bgViaInstance = TailwindStyle().bg(.blue, .s500)
+    let flexGapViaInstance = TailwindStyleBuilder().flex.gap(4)
+    #expect(TailwindStyleBuilder.flex.gap(4) == flexGapViaInstance)
+    let bgViaInstance = TailwindStyleBuilder().bg(.blue, .s500)
     #expect(TW.bg(.blue, .s500) == bgViaInstance)
   }
 

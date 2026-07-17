@@ -1,5 +1,5 @@
 //
-//  Node+Tailwind.swift
+//  Justify.swift
 //  TailwindKit
 //
 //  Created by Leo Dion.
@@ -27,30 +27,9 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Plot
+/// Main-axis distribution for `justify-*` (`justify-content`).
+public enum Justify: String, Sendable, CaseIterable {
+  case start, center, end, between, around, evenly
 
-extension Node where Context: HTMLContext {
-  /// Render a ``TailwindStyle`` into this element's `class` attribute.
-  ///
-  /// Sugar for `.class(style.rendered)`:
-  ///
-  /// ```swift
-  /// Node.div(.tailwind(.flex.items(.center).gap(4)))
-  /// // <div class="flex items-center gap-4"></div>
-  /// ```
-  ///
-  /// For any class not modeled by ``TailwindStyle``, use Plot's existing
-  /// `.class("…")` directly.
-  public static func tailwind(_ style: TailwindStyle) -> Node {
-    .class(style.rendered)
-  }
-}
-
-extension Attribute where Context: HTMLContext {
-  /// Render a ``TailwindStyle`` into this element's `class` attribute.
-  ///
-  /// Sugar for `.class(style.rendered)`.
-  public static func tailwind(_ style: TailwindStyle) -> Attribute {
-    .class(style.rendered)
-  }
+  internal var token: String { rawValue }
 }

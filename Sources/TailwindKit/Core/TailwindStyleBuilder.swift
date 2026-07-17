@@ -1,5 +1,5 @@
 //
-//  TailwindStyle.swift
+//  TailwindStyleBuilder.swift
 //  TailwindKit
 //
 //  Created by Leo Dion.
@@ -30,10 +30,10 @@
 /// A type-safe, fluent builder for [Tailwind CSS v4](https://tailwindcss.com)
 /// utility class strings.
 ///
-/// `TailwindStyle` is a pure value type with **no dependency on Plot** (or any
+/// `TailwindStyleBuilder` is a pure value type with **no dependency on Plot** (or any
 /// HTML library). Every member — bare utilities exposed as computed properties
 /// and parameterized utilities exposed as methods — returns a new
-/// `TailwindStyle`, so styles are composed by chaining:
+/// `TailwindStyleBuilder`, so styles are composed by chaining:
 ///
 /// ```swift
 /// TW.flex.items(.center).gap(4).bg(.blue, .s500).rendered
@@ -50,9 +50,9 @@
 ///
 /// The set of modeled utilities is intentionally **closed** and grown
 /// component-driven: add cases as components need them. For any class not yet
-/// modeled, the escape hatch is Plot's existing `.class("…")` — `TailwindStyle`
+/// modeled, the escape hatch is Plot's existing `.class("…")` — `TailwindStyleBuilder`
 /// itself never accepts raw strings.
-public struct TailwindStyle: Sendable, Equatable, Hashable {
+public struct TailwindStyleBuilder: Sendable, Equatable, Hashable {
   /// The ordered, fully-prefixed utility tokens (e.g. `"items-center"`,
   /// `"md:gap-4"`), rendered space-separated by ``rendered``.
   private let tokens: [String]
@@ -78,9 +78,13 @@ public struct TailwindStyle: Sendable, Equatable, Hashable {
     self.tokens = tokens
   }
 
-  /// Returns a new style with `token` appended.
-  internal func appending(_ token: String) -> TailwindStyle {
-    TailwindStyle(tokens: tokens + [token])
+  /// Returns a new style with the raw token string `token` appended.
+  ///
+  /// File-private: the only raw-string composition point. The public seam
+  /// (``appending(_:)`` taking a ``TailwindClass``) forwards here, so no
+  /// raw-string entry point is ever exposed.
+  private func appendingToken(_ token: String) -> TailwindStyleBuilder {
+    TailwindStyleBuilder(tokens: tokens + [token])
   }
 
   /// Returns a new style with every token of `other` prefixed by
@@ -88,7 +92,25 @@ public struct TailwindStyle: Sendable, Equatable, Hashable {
   ///
   /// Used to model responsive/state variants (e.g. `md`, `hover`); prefixes
   /// stack, so `.md(.hover(.bg(.blue, .s700)))` renders `"md:hover:bg-blue-700"`.
-  internal func prefixing(_ prefix: String, _ other: TailwindStyle) -> TailwindStyle {
-    TailwindStyle(tokens: tokens + other.tokens.map { "\(prefix):\($0)" })
+  private func prefixingToken(_ prefix: String, _ other: TailwindStyleBuilder)
+    -> TailwindStyleBuilder
+  {
+    TailwindStyleBuilder(tokens: tokens + other.tokens.map { "\(prefix):\($0)" })
+  }
+}
+
+// The public seam (see ``TailwindStyle``). Both primitives forward to the
+// file-private string helpers above; retyping the *public* surface to
+// ``TailwindClass`` / ``Variant`` is what lets the seam be public without ever
+// accepting a raw `String`.
+extension TailwindStyleBuilder: TailwindStyle {
+  /// Returns a new style with `tailwindClass` appended.
+  public func appending(_ tailwindClass: some TailwindClass) -> Self {
+    appendingToken(tailwindClass.className)
+  }
+
+  /// Returns a new style with every token of `other` prefixed by `variant`.
+  public func prefixing(_ variant: some Variant, _ other: TailwindStyleBuilder) -> Self {
+    prefixingToken(variant.token, other)
   }
 }

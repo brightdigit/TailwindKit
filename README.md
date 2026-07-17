@@ -51,12 +51,33 @@ TW.block.lg(.hidden).rendered              // "block lg:hidden"
 TW.md(.hover(.bg(.blue, .s700))).rendered  // "md:hover:bg-blue-700"
 ```
 
+### Custom / arbitrary values
+
+For the occasional [arbitrary value](https://tailwindcss.com/docs/adding-custom-styles)
+Tailwind v4 supports (square-bracket and CSS-variable notation), use the
+type-safe `.custom(_:_:)` API — the utility prefix is supplied by you, only the
+value is arbitrary:
+
+```swift
+TW.custom("top", .value("117px")).rendered      // "top-[117px]"
+TW.custom("bg", .value("#bada55")).rendered      // "bg-[#bada55]"
+TW.custom("bg", .variable("--brand")).rendered   // "bg-(--brand)"
+TW.custom("grid-cols", .value("1fr 500px")).rendered
+// "grid-cols-[1fr_500px]"  (spaces become underscores)
+TW.custom(property: "mask-type", value: "luminance").rendered
+// "[mask-type:luminance]"
+```
+
 ## Scope
 
 The modeled utility surface is intentionally **closed** — a set of Swift enums
 and methods — and grows component-driven as consumers (issue #67) need new
-classes. For any class not yet modeled, the escape hatch is Plot's existing
-`.class("…")`; TailwindKit itself never accepts raw strings.
+classes. Related bare utilities are grouped into cohesive enum "sets"
+(`Position`, `Flex`, `FlexDirection`, `ListStyle`, …) instead of a flat list of
+properties. The only caller-supplied value strings TailwindKit accepts are
+through the deliberate `.custom(…)` arbitrary-value API above (which still can't
+emit a free-form class name). For any class not modeled at all, the escape hatch
+is Plot's existing `.class("…")`.
 
 ## Testing
 
