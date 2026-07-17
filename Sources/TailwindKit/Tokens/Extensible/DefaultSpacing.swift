@@ -58,6 +58,17 @@ public struct DefaultSpacing: Spacing,
   internal init(_ token: String) {
     self.token = token
   }
+
+  /// Builds the Tailwind class for `prefix` with this spacing value, moving a
+  /// leading negative sign ahead of the prefix (`-top-4`, `-mx-2`, `-space-x-2`)
+  /// as Tailwind v4 requires. Non-negative values render `prefix-<token>`
+  /// unchanged. Every spacing/inset/gap utility routes through this so negatives
+  /// are formatted identically, not just margins.
+  internal func className(prefix: String) -> String {
+    token.hasPrefix("-")
+      ? "-\(prefix)-\(token.dropFirst())"
+      : "\(prefix)-\(token)"
+  }
 }
 
 extension Spacing where Self == DefaultSpacing {
@@ -69,10 +80,12 @@ extension Spacing where Self == DefaultSpacing {
   /// The `auto` keyword, e.g. `mx-auto`.
   public static var auto: DefaultSpacing { .auto }
 
-  /// A negative spacing value, e.g. `.neg(2)` on `.mx` → `-mx-2`.
+  /// A negative spacing value, e.g. `.neg(2)` on `.mx` → `-mx-2`,
+  /// on `.top` → `-top-2`.
   ///
-  /// Tailwind emits negatives by prefixing the whole utility with `-`; the
-  /// margin methods prepend the `-` when the token begins with one.
+  /// Tailwind emits negatives by prefixing the whole utility with `-`; every
+  /// spacing/inset/gap utility routes through ``DefaultSpacing/className(prefix:)``
+  /// so the `-` is moved ahead of the prefix consistently.
   public static func neg(_ value: Int) -> DefaultSpacing {
     .init("-\(value)")
   }

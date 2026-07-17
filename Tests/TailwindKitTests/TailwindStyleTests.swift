@@ -63,7 +63,6 @@ import Testing
     #expect(TW.grid.rendered == "grid")
     #expect(TW.hidden.rendered == "hidden")
     #expect(TW.italic.underline.rendered == "italic underline")
-    #expect(TW.gap.rendered == "gap")
   }
 
   @Test internal func spacingScale() {

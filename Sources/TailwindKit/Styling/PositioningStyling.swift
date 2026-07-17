@@ -54,25 +54,25 @@ extension PositioningStyling where Self: TailwindStyle {
   public func position(_ value: Position) -> Self {
     appending(DefaultTailwindClass(value.token))
   }
-  /// `top-<amount>`, e.g. `.top(.s4)`.
+  /// `top-<amount>`, e.g. `.top(.s4)`; `.top(.neg(4))` → `-top-4`.
   public func top(_ amount: DefaultSpacing) -> Self {
-    appending(DefaultTailwindClass("top-\(amount.token)"))
+    appending(DefaultTailwindClass(amount.className(prefix: "top")))
   }
-  /// `right-<amount>`, e.g. `.right(.s4)`.
+  /// `right-<amount>`, e.g. `.right(.s4)`; `.right(.neg(4))` → `-right-4`.
   public func right(_ amount: DefaultSpacing) -> Self {
-    appending(DefaultTailwindClass("right-\(amount.token)"))
+    appending(DefaultTailwindClass(amount.className(prefix: "right")))
   }
-  /// `bottom-<amount>`, e.g. `.bottom(.s4)`.
+  /// `bottom-<amount>`, e.g. `.bottom(.s4)`; `.bottom(.neg(4))` → `-bottom-4`.
   public func bottom(_ amount: DefaultSpacing) -> Self {
-    appending(DefaultTailwindClass("bottom-\(amount.token)"))
+    appending(DefaultTailwindClass(amount.className(prefix: "bottom")))
   }
-  /// `left-<amount>`, e.g. `.left(.s4)`.
+  /// `left-<amount>`, e.g. `.left(.s4)`; `.left(.neg(4))` → `-left-4`.
   public func left(_ amount: DefaultSpacing) -> Self {
-    appending(DefaultTailwindClass("left-\(amount.token)"))
+    appending(DefaultTailwindClass(amount.className(prefix: "left")))
   }
-  /// `inset-<amount>`, e.g. `.inset(.s4)`.
+  /// `inset-<amount>`, e.g. `.inset(.s4)`; `.inset(.neg(4))` → `-inset-4`.
   public func inset(_ amount: DefaultSpacing) -> Self {
-    appending(DefaultTailwindClass("inset-\(amount.token)"))
+    appending(DefaultTailwindClass(amount.className(prefix: "inset")))
   }
   /// `z-<index>`, e.g. `.z(10)`.
   public func z(_ index: Int) -> Self {

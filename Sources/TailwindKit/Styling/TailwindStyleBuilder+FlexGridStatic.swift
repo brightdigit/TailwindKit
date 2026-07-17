@@ -38,8 +38,6 @@ extension TailwindStyleBuilder {
   public static var grow0: TailwindStyleBuilder { TailwindStyleBuilder().grow0 }
   /// `shrink-0`.
   public static var shrink0: TailwindStyleBuilder { TailwindStyleBuilder().shrink0 }
-  /// `gap` (bare).
-  public static var gap: TailwindStyleBuilder { TailwindStyleBuilder().gap }
 }
 
 extension TailwindStyleBuilder {

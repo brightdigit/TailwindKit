@@ -44,8 +44,6 @@ public protocol FlexGridStyling {
   var grow0: Self { get }
   /// `shrink-0`.
   var shrink0: Self { get }
-  /// `gap` (bare).
-  var gap: Self { get }
 
   /// `items-<align>` — cross-axis alignment, e.g. `.items(.center)`.
   func items(_ align: Align) -> Self
@@ -94,8 +92,6 @@ extension FlexGridStyling where Self: TailwindStyle {
   public var grow0: Self { appending(DefaultTailwindClass("grow-0")) }
   /// `shrink-0`.
   public var shrink0: Self { appending(DefaultTailwindClass("shrink-0")) }
-  /// `gap` (bare).
-  public var gap: Self { appending(DefaultTailwindClass("gap")) }
 
   // MARK: Flex & grid
 
@@ -113,15 +109,15 @@ extension FlexGridStyling where Self: TailwindStyle {
   }
   /// `gap-<n>`, e.g. `.gap(4)`.
   public func gap(_ amount: DefaultSpacing) -> Self {
-    appending(DefaultTailwindClass("gap-\(amount.token)"))
+    appending(DefaultTailwindClass(amount.className(prefix: "gap")))
   }
   /// `gap-x-<n>`.
   public func gapX(_ amount: DefaultSpacing) -> Self {
-    appending(DefaultTailwindClass("gap-x-\(amount.token)"))
+    appending(DefaultTailwindClass(amount.className(prefix: "gap-x")))
   }
   /// `gap-y-<n>`.
   public func gapY(_ amount: DefaultSpacing) -> Self {
-    appending(DefaultTailwindClass("gap-y-\(amount.token)"))
+    appending(DefaultTailwindClass(amount.className(prefix: "gap-y")))
   }
   /// `flex-<value>` shorthand, e.g. `.flex(.one)` → `flex-1`.
   public func flex(_ value: Flex) -> Self {
@@ -155,13 +151,13 @@ extension FlexGridStyling where Self: TailwindStyle {
   public func placeSelf(_ align: Align) -> Self {
     appending(DefaultTailwindClass("place-self-\(align.token)"))
   }
-  /// `space-x-<n>`, e.g. `.spaceX(1)`.
+  /// `space-x-<n>`, e.g. `.spaceX(1)`; `.spaceX(.neg(2))` → `-space-x-2`.
   public func spaceX(_ amount: DefaultSpacing) -> Self {
-    appending(DefaultTailwindClass("space-x-\(amount.token)"))
+    appending(DefaultTailwindClass(amount.className(prefix: "space-x")))
   }
-  /// `space-y-<n>`.
+  /// `space-y-<n>`; `.spaceY(.neg(2))` → `-space-y-2`.
   public func spaceY(_ amount: DefaultSpacing) -> Self {
-    appending(DefaultTailwindClass("space-y-\(amount.token)"))
+    appending(DefaultTailwindClass(amount.className(prefix: "space-y")))
   }
 }
 

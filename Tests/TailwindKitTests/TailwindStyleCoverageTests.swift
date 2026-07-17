@@ -73,6 +73,20 @@ import Testing
     #expect(TW.ml(.neg(2)).mt(.neg(2)).rendered == "-ml-2 -mt-2")
   }
 
+  @Test internal func negativeSpacingBeyondMargins() {
+    // Every spacing/inset/gap utility must move the `-` ahead of the prefix,
+    // not just margins — Tailwind has no `top--4` / `gap--2` classes.
+    #expect(TW.top(.neg(4)).rendered == "-top-4")
+    #expect(TW.right(.neg(4)).rendered == "-right-4")
+    #expect(TW.bottom(.neg(4)).rendered == "-bottom-4")
+    #expect(TW.left(.neg(4)).rendered == "-left-4")
+    #expect(TW.inset(.neg(4)).rendered == "-inset-4")
+    #expect(TW.spaceX(.neg(2)).rendered == "-space-x-2")
+    #expect(TW.spaceY(.neg(2)).rendered == "-space-y-2")
+    // Non-negative values are unaffected.
+    #expect(TW.top(4).gapX(2).rendered == "top-4 gap-x-2")
+  }
+
   @Test internal func bordersSidesStyleAndRadius() {
     #expect(TW.border(.top, 2).rendered == "border-t-2")
     #expect(TW.border(.bottom, 2).rendered == "border-b-2")

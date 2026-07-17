@@ -116,11 +116,7 @@ extension SpacingStyling where Self: TailwindStyle {
   // MARK: Helpers
 
   private func spaced(_ prefix: String, _ amount: DefaultSpacing) -> Self {
-    amount.token.hasPrefix("-")
-      ? appending(
-        DefaultTailwindClass("-\(prefix)-\(amount.token.dropFirst())")
-      )
-      : appending(DefaultTailwindClass("\(prefix)-\(amount.token)"))
+    appending(DefaultTailwindClass(amount.className(prefix: prefix)))
   }
 }
 
