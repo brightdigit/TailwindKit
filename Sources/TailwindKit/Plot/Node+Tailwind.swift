@@ -54,3 +54,28 @@ extension Attribute where Context: HTMLContext {
     .class(style.rendered)
   }
 }
+
+extension Component {
+  /// Render a ``TailwindStyleBuilder`` into this component's `class` attribute.
+  ///
+  /// Sugar for `.class(style.rendered)` on Plot components (e.g. `Image`,
+  /// `Link`), which — unlike `Node`/`Attribute` — expose class assignment as an
+  /// instance modifier rather than a static factory:
+  ///
+  /// ```swift
+  /// Image("logo.png").tailwind(.rounded(.lg))
+  /// // <img src="logo.png" class="rounded-lg"/>
+  /// ```
+  ///
+  /// - Parameters:
+  ///   - style: The Tailwind style builder to render.
+  ///   - replaceExisting: Whether the rendered classes should replace any
+  ///     existing `class` value. Defaults to `false`, appending instead.
+  /// - Returns: The resulting component.
+  public func tailwind(
+    _ style: TailwindStyleBuilder,
+    replaceExisting: Bool = false
+  ) -> Component {
+    self.class(style.rendered, replaceExisting: replaceExisting)
+  }
+}

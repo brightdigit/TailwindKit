@@ -126,6 +126,9 @@ excluded:
   - Examples
   - Packages
   - Package.swift
+  # Danger DSL script (danger-swift), not library source — the house rules
+  # (explicit ACL, force-unwrap, line length) don't apply to it.
+  - Dangerfile.swift
 indentation_width:
   indentation_width: 2
 file_name:
