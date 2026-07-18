@@ -6,6 +6,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  PLOT_BRANCH: brightdigit-com-260406
+
 jobs:
   swift-source-compat-suite:
     name: Test Swift ${{ matrix.container }} For Source Compatibility Suite
@@ -23,6 +26,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+      - name: Ensure remote deps
+        shell: bash
+        run: ./Scripts/ensure-remote-deps.sh
 
       - name: Test Swift 6.x For Source Compatibility
         run: swift build --disable-sandbox --verbose --configuration release

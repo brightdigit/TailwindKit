@@ -13,7 +13,7 @@ let package = Package(
     )
   ],
   dependencies: [
-    .package(path: "../../Publish/Plot")
+    .package(name: "Plot", path: "../../Publish/Plot")
   ],
   targets: [
     .target(

@@ -25,6 +25,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
+env:
+  PLOT_BRANCH: brightdigit-com-260406
+
 jobs:
   build-ubuntu:
     name: Build on Ubuntu
@@ -42,6 +45,9 @@ jobs:
         type: ${{ fromJSON(needs.configure.outputs.ubuntu-type) }}
     steps:
       - uses: actions/checkout@v6
+      - name: Ensure remote deps
+        shell: bash
+        run: ./Scripts/ensure-remote-deps.sh
       - uses: brightdigit/swift-build@v1
         id: build
         with:
@@ -92,6 +98,9 @@ jobs:
       ubuntu-type: ${{ steps.check.outputs.ubuntu-type }}
     steps:
       - uses: actions/checkout@v6
+      - name: Ensure remote deps
+        shell: bash
+        run: ./Scripts/ensure-remote-deps.sh
       - id: check
         name: Determine matrix scope
         run: |
@@ -126,6 +135,9 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, 'ci skip') }}
     steps:
       - uses: actions/checkout@v6
+      - name: Ensure remote deps
+        shell: bash
+        run: ./Scripts/ensure-remote-deps.sh
       - uses: brightdigit/swift-build@v1
         id: build
         with:
@@ -161,6 +173,9 @@ jobs:
             build: 6.4.x-DEVELOPMENT-SNAPSHOT-2026-06-01-a
     steps:
       - uses: actions/checkout@v6
+      - name: Ensure remote deps
+        shell: bash
+        run: ./Scripts/ensure-remote-deps.sh
       - uses: brightdigit/swift-build@v1
         id: build
         with:
@@ -188,6 +203,9 @@ jobs:
           - { type: tvos,    deviceName: "Apple TV 4K (3rd generation)", osVersion: "27.0" }
     steps:
       - uses: actions/checkout@v6
+      - name: Ensure remote deps
+        shell: bash
+        run: ./Scripts/ensure-remote-deps.sh
       - name: Build and Test
         id: build
         # watchOS disabled where ENABLE_WATCHOS=false (SwiftPM #10188, watchOS-27
@@ -227,6 +245,9 @@ jobs:
         android-api-level: [34]
     steps:
       - uses: actions/checkout@v6
+      - name: Ensure remote deps
+        shell: bash
+        run: ./Scripts/ensure-remote-deps.sh
       - name: Free disk space
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
@@ -258,6 +279,9 @@ jobs:
           apt-get update -q
           apt-get install -y --no-install-recommends curl ca-certificates
       - uses: actions/checkout@v6
+      - name: Ensure remote deps
+        shell: bash
+        run: ./Scripts/ensure-remote-deps.sh
       - uses: jdx/mise-action@v4
         env:
           MISE_HTTP_TIMEOUT: 300s
