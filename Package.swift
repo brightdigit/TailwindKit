@@ -13,7 +13,10 @@ let package = Package(
     )
   ],
   dependencies: [
-    .package(name: "Plot", path: "../../Publish/Plot")
+    .package(
+      url: "https://github.com/brightdigit/Plot.git",
+      branch: "brightdigit-com-260406"
+    )
   ],
   targets: [
     .target(
