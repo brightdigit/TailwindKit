@@ -65,39 +65,31 @@ fi
 
 pushd $PACKAGE_DIR
 
-# swift-format has no path-exclude config, so enumerate the hand-written Swift
-# files only — pruning the committed swift-openapi-generator output under
-# Sources/ButtondownKit/Generated, which is never linted or formatted.
-# SwiftLint excludes that directory via .swiftlint.yml. Built portably (no
-# `mapfile`, which is unavailable on the macOS-default bash 3.2).
-SWIFT_FILES=()
-while IFS= read -r swift_file; do
-	SWIFT_FILES+=("$swift_file")
-done < <(find Sources Tests -name '*.swift' -not -path '*/Generated/*')
-
 # Bootstrap tools (mise will install based on .mise.toml)
 run_command "$MISE_BIN" install
 
 if [ -z "$CI" ]; then
-	run_command $TOOL_CMD swift-format format --configuration .swift-format --parallel --in-place "${SWIFT_FILES[@]}"
+	run_command $TOOL_CMD swift-format format --configuration .swift-format --recursive --parallel --in-place Sources Tests
 	run_command $TOOL_CMD swiftlint --fix
 fi
 
 if [ -z "$FORMAT_ONLY" ]; then
-	run_command $TOOL_CMD swift-format lint --configuration .swift-format --parallel $SWIFTFORMAT_LINT_OPTIONS "${SWIFT_FILES[@]}"
+	run_command $TOOL_CMD swift-format lint --configuration .swift-format --recursive --parallel $SWIFTFORMAT_LINT_OPTIONS Sources Tests
 	run_command $TOOL_CMD swiftlint lint $SWIFTLINT_OPTIONS
 	# Check for compilation errors
 	run_command swift build --build-tests
 fi
 
 # header.sh rewrites file headers in place, so it only runs locally — never in CI.
-# (It already skips files under a Generated/ directory.)
 if [ -z "$CI" ]; then
 	$PACKAGE_DIR/Scripts/header.sh -d $PACKAGE_DIR/Sources -c "Leo Dion" -o "BrightDigit" -p "TailwindKit"
 fi
 
 if [ -z "$CI" ]; then
-	run_command $TOOL_CMD periphery scan $PERIPHERY_OPTIONS --disable-update-check
+	# Swift 6.4's default 'swiftbuild' build system writes the index store to
+	# .build/index-build/...; periphery 3.7.4 looks for it under .build/debug/index/store.
+	# Force the native build system so periphery finds the index store.
+	run_command $TOOL_CMD periphery scan $PERIPHERY_OPTIONS --disable-update-check -- --build-system native
 fi
 
 popd
