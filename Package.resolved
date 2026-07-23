@@ -1,13 +1,13 @@
 {
-  "originHash" : "0a342552ad98382cf072cc203bc34f113c2ce3e4d498207e31404faecd0d2350",
+  "originHash" : "1ca3e095da091c32e42e05f6b7a6bf8aa04a9bbc9b14460239423523ab7c68ee",
   "pins" : [
     {
       "identity" : "plot",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/brightdigit/Plot.git",
       "state" : {
-        "branch" : "brightdigit-com-260406",
-        "revision" : "c357a8a5303159900017176a1450f6b825e6fb93"
+        "branch" : "main",
+        "revision" : "793bca83340d09694f5207660a9e319079185131"
       }
     }
   ],
