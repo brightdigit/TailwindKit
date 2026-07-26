@@ -30,8 +30,8 @@
 /// A type-safe, fluent builder for [Tailwind CSS v4](https://tailwindcss.com)
 /// utility class strings.
 ///
-/// `TailwindStyleBuilder` is a pure value type with **no dependency on Plot** (or any
-/// HTML library). Every member — bare utilities exposed as computed properties
+/// `TailwindStyleBuilder` is a pure value type with **no dependencies at all** —
+/// no HTML library, not even Foundation. Every member — bare utilities exposed as computed properties
 /// and parameterized utilities exposed as methods — returns a new
 /// `TailwindStyleBuilder`, so styles are composed by chaining:
 ///
@@ -40,9 +40,9 @@
 /// // "flex items-center gap-4 bg-blue-500"
 /// ```
 ///
-/// The final class string is produced by ``rendered``. To attach a style to a
-/// Plot element, use the single `.tailwind(_:)` convenience (see
-/// `Node+Tailwind.swift`):
+/// The final class string is produced by ``rendered``, which is all an HTML
+/// library needs. Conform an element type to ``TailwindClassAttribute`` to
+/// attach a style with `.tailwind(_:)` instead:
 ///
 /// ```swift
 /// Node.div(.tailwind(.flex.items(.center).gap(4)), .text("Hi"))
@@ -50,8 +50,8 @@
 ///
 /// The set of modeled utilities is intentionally **closed** and grown
 /// component-driven: add cases as components need them. For any class not yet
-/// modeled, the escape hatch is Plot's existing `.class("…")` — `TailwindStyleBuilder`
-/// itself never accepts raw strings.
+/// modeled, the escape hatch is the HTML library's own `class` API —
+/// `TailwindStyleBuilder` itself never accepts raw strings.
 public struct TailwindStyleBuilder: Sendable, Equatable, Hashable {
   /// The ordered, fully-prefixed utility tokens (e.g. `"items-center"`,
   /// `"md:gap-4"`), rendered space-separated by ``rendered``.

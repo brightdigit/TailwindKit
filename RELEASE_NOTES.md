@@ -32,11 +32,11 @@ Tailwind **v4-only** builder.
 - Arbitrary-value support for Tailwind v4 square-bracket and CSS-variable notation, via
   per-family `.arbitrary(_:)` statics plus `arbitrary(_:value:)`,
   `arbitrary(_:variable:)` and `custom(property:value:)`.
-- Plot integration is confined to a single file, `Node+Tailwind.swift`, which adds
-  `.tailwind(_:)` as sugar for `.class(style.rendered)`. The builder itself never imports
-  Plot.
-- Plot is now consumed as a remote package dependency instead of a local path dependency,
-  so the package builds standalone outside the brightdigit.com monorepo.
+- **The package has no dependencies at all** — not even Foundation. HTML-library support is
+  opt-in through the `TailwindClassAttribute` seam: conform an element type to its single
+  `tailwindClass(_:)` requirement and the `.tailwind(_:)` sugar comes with it, with
+  leading-dot inference intact. Consumers own the conformance, so TailwindKit no longer
+  depends on Plot.
 - Added `LICENSE` (MIT © BrightDigit); the package previously shipped with none.
 - Added a `TailwindKit.docc` catalog and `.spi.yml` so Swift Package Index builds
   documentation for the `TailwindKit` target.
@@ -46,7 +46,8 @@ Tailwind **v4-only** builder.
 - Replaced `AspectRatioTests`, `BreakpointTests` and `FlexboxTests` with four
   swift-testing suites — `TailwindStyleTests`, `TailwindStyleCoverageTests`,
   `TailwindStyleExtensibilityTests` and `TailwindStyleSetsAndCustomTests` — that assert
-  `.rendered` string equality only and never import Plot.
+  `.rendered` string equality only and never import an HTML library. `TailwindClassAttributeTests`
+  covers the integration seam by conforming a local stub.
 
 ### CI
 

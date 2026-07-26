@@ -112,8 +112,11 @@ import Testing
     #expect(TW.maxW(.arbitrary("48rem")).rendered == "max-w-[48rem]")
     #expect(TW.gap(.arbitrary("13px")).rendered == "gap-[13px]")
     #expect(TW.w(.arbitrary("137px")).rendered == "w-[137px]")
-    // Spaces become underscores (Tailwind restores them at build time).
+    // Spaces become underscores (Tailwind restores them at build time), on
+    // every scale that offers an arbitrary escape.
     #expect(TW.gap(.arbitrary("1fr 500px")).rendered == "gap-[1fr_500px]")
+    #expect(TW.w(.arbitrary("calc(100% - 2rem)")).rendered == "w-[calc(100%_-_2rem)]")
+    #expect(TW.maxW(.arbitrary("min(90vw, 40rem)")).rendered == "max-w-[min(90vw,_40rem)]")
   }
 
   @Test internal func builtInVariantsRenderAndStack() {

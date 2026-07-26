@@ -75,14 +75,21 @@ TW.custom(property: "mask-type", value: "luminance").rendered
 // "[mask-type:luminance]"
 ```
 
-### Plot integration
+### HTML-library integration
 
-Plot support lives in exactly one file, so the builder itself never imports an HTML library.
-It adds a single piece of sugar that expands to Plot's `.class(_:)`:
+TailwindKit depends on no HTML library — ``TailwindStyleBuilder/rendered`` is a plain `String`, so
+it works with any of them. Conform an attribute type to ``TailwindClassAttribute`` to gain the
+``TailwindClassAttribute/tailwind(_:)`` sugar; for [Plot](https://github.com/JohnSundell/Plot):
 
 ```swift
 import Plot
 import TailwindKit
+
+extension Node: TailwindClassAttribute where Context: HTMLContext {
+  public static func tailwindClass(_ className: String) -> Node {
+    .class(className)
+  }
+}
 
 Node.div(.tailwind(.flex.items(.center).gap(4)), .text("Hi"))
 // <div class="flex items-center gap-4">Hi</div>
@@ -95,6 +102,10 @@ Node.div(.tailwind(.flex.items(.center).gap(4)), .text("Hi"))
 - ``TailwindStyleBuilder``
 - ``TW``
 - ``TailwindStyle``
+
+### Integration
+
+- ``TailwindClassAttribute``
 
 ### Capabilities
 

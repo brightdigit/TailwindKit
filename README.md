@@ -38,7 +38,7 @@ TW.flex.items(.center).gap(4).bg(.blue, .s500).rendered
 > **closed** — a set of Swift enums and methods that grows as consuming components need new
 > classes, not a mirror of every class Tailwind can emit. The public API accepts no free-form class
 > name; the only caller-supplied strings go through the explicit arbitrary-value API below. For a
-> class that isn't modeled at all, the escape hatch is Plot's existing `.class("…")`.
+> class that isn't modeled at all, the escape hatch is your HTML library's own `class` API.
 
 ## Installation
 
@@ -78,23 +78,52 @@ The fluent surface is organized into one public capability protocol per CSS conc
 `ListStyling`, `VariantStyling` and `ArbitraryStyling` — all composed through the seam protocol
 `TailwindStyle`.
 
-### With Plot
+### With an HTML library
 
-The Plot bridge is `.tailwind(_:)`, which expands to Plot's `.class(style.rendered)`:
+**TailwindKit has no dependencies** — not even Foundation. `TailwindStyleBuilder.rendered` is just a
+`String`, so it drops into any HTML library:
+
+```swift
+Node.div(.class(TW.flex.items(.center).gap(4).rendered), .text("Hi"))
+```
+
+For nicer call sites, conform that library's attribute type to `TailwindClassAttribute`. The
+protocol has a single requirement, and the `.tailwind(_:)` sugar comes with it:
 
 ```swift
 import Plot
 import TailwindKit
 
+extension Node: TailwindClassAttribute where Context: HTMLContext {
+  public static func tailwindClass(_ className: String) -> Node {
+    .class(className)
+  }
+}
+
 Node.div(.tailwind(.flex.items(.center).gap(4)), .text("Hi"))
 // <div class="flex items-center gap-4">Hi</div>
+```
+
+One conditional conformance covers every context, and leading-dot inference keeps working through
+the protocol extension, so `.tailwind(…)` reads exactly like a native factory.
+
+Types whose class assignment is an *instance* modifier rather than a static factory — Plot's
+`Component`, say — can't use the protocol, because Swift does not allow retroactively conforming one
+protocol to another. Write the one-liner directly instead:
+
+```swift
+extension Component {
+  public func tailwind(
+    _ style: TailwindStyleBuilder,
+    replaceExisting: Bool = false
+  ) -> Component {
+    self.class(style.rendered, replaceExisting: replaceExisting)
+  }
+}
 
 Image("logo.png").tailwind(.rounded(.lg))
 // <img src="logo.png" class="rounded-lg"/>
 ```
-
-Only `Node+Tailwind.swift` imports Plot, so `TailwindStyleBuilder` stays usable without an HTML
-library — and the test suite asserts on `.rendered` strings alone.
 
 ### Responsive and state variants
 
@@ -145,8 +174,9 @@ swift test
 ```
 
 `Tests/TailwindKitTests` uses swift-testing (`@Suite`/`@Test`/`#expect`). The tests are offline and
-Plot-independent: they assert `.rendered` string equality only, e.g.
-`TW.flex.gap(4).rendered == "flex gap-4"`.
+depend on no HTML library: they assert `.rendered` string equality only, e.g.
+`TW.flex.gap(4).rendered == "flex gap-4"`. The `TailwindClassAttribute` seam is covered by
+conforming a local stand-in type.
 
 ## Requirements
 

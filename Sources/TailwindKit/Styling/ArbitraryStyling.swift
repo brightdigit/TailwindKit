@@ -52,7 +52,7 @@ public protocol ArbitraryStyling {
 
 extension ArbitraryStyling where Self: TailwindStyle {
   private func escapingSpaces(_ value: String) -> String {
-    value.replacingOccurrences(of: " ", with: "_")
+    TailwindKit.escapingSpaces(value)
   }
 
   /// `<prefix>-[<value>]`, e.g. `.arbitrary("top", value: "117px")` → `top-[117px]`.

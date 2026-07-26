@@ -12,18 +12,9 @@ let package = Package(
       targets: ["TailwindKit"]
     )
   ],
-  dependencies: [
-    .package(
-      url: "https://github.com/brightdigit/Plot.git",
-      branch: "main"
-    )
-  ],
   targets: [
     .target(
-      name: "TailwindKit",
-      dependencies: [
-        .product(name: "Plot", package: "Plot")
-      ]
+      name: "TailwindKit"
     ),
     .testTarget(
       name: "TailwindKitTests",

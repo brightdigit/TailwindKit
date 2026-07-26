@@ -13,7 +13,7 @@ mode; targets macOS 13+ and Linux. Tailwind **v4 only**.
 ## Commands
 
 ```bash
-swift test                              # run the (offline, Plot-independent) tests
+swift test                              # run the (offline, dependency-free) tests
 swift build --build-tests               # compile
 
 # Single test: filter by suite/method
@@ -32,13 +32,28 @@ only when `CI` is unset; in CI it lints and builds without mutating files.
 
 ## Architecture — the one design decision
 
-`TailwindStyleBuilder` is an immutable value builder that is **Plot-independent**.
-The core builder and its utility surface live in Plot-free files
-(`TailwindStyleBuilder.swift`, the token files, and the
-`*Styling.swift` capability files). The **only** file that imports Plot is
-`Node+Tailwind.swift`, which adds the single sugar `.tailwind(_ style:)` →
-`.class(style.rendered)` on `Node`/`Attribute`. (The plain name `TailwindStyle`
-is the **seam protocol**, see below; `TW` is the typealias for the builder.)
+`TailwindStyleBuilder` is an immutable value builder, and **this package has no
+dependencies at all** — not even Foundation. Keep it that way: `rendered` is a
+plain `String`, which is the whole seam an HTML library needs.
+
+HTML-library sugar is opt-in via `TailwindClassAttribute`
+(`Integration/TailwindClassAttribute.swift`): one static requirement,
+`tailwindClass(_:) -> Self`, with `.tailwind(_ style:)` supplied by a protocol
+extension. A consumer conditionally conforms its own element type (BrightDigit
+does this for Plot's `Node`/`Attribute` in `BrightDigitSite`). Do **not** add an
+HTML-library dependency back to this package.
+
+Note that a protocol cannot be retroactively conformed to another protocol, so
+element types exposing `class` as an *instance* modifier (Plot's `Component`)
+can't use the seam — consumers write that one-liner directly. That asymmetry is
+a Swift limitation, not an oversight.
+
+Because there is no Foundation import, `String.replacingOccurrences` is
+unavailable; arbitrary-value space escaping goes through
+`escapingSpaces(_:)` in `Core/ArbitraryValue.swift`.
+
+(The plain name `TailwindStyle` is the **seam protocol**, see below; `TW` is the
+typealias for the builder.)
 
 - Every fluent member returns a new `TailwindStyleBuilder`. Bare utilities are computed
   properties (`.flex`, `.gap`); parameterized ones are methods (`.gap(4)`,
@@ -128,7 +143,7 @@ in extensions constrained on the `UnderlyingClientProtocol` seam).
   `.arbitrary(_ prefix:variable:)` (→ `prefix-(--var)`), and
   `.custom(property:value:)` (→ `[property:value]`). The removed
   `TailwindStyle+Custom.swift`/`Custom` type is gone. For any class not modeled at
-  all, the escape hatch remains Plot's existing `.class("…")`.
+  all, the escape hatch remains the HTML library's own `class` API.
 - Shades are enum cases `.s50`…`.s950` (Swift disallows the `.500` spelling and
   leading underscores), e.g. `.bg(.blue, .s500)`. Shade is deliberately **not**
   extensible: in v4 `blue-500` is a single `--color-blue-500` variable, so a
@@ -136,10 +151,11 @@ in extensions constrained on the `UnderlyingClientProtocol` seam).
 
 ## Tests
 
-Tests are offline and **Plot-independent**: they assert `.rendered` string
+Tests are offline and **dependency-free**: they assert `.rendered` string
 equality only (e.g. `TW.flex.gap(4).rendered == "flex gap-4"`), so nothing in
-the test target imports Plot. Uses swift-testing (`@Suite`/`@Test`/`#expect`),
-not XCTest.
+the test target imports an HTML library. `TailwindClassAttribute` is covered by
+conforming a local stub, which keeps that property true. Uses swift-testing
+(`@Suite`/`@Test`/`#expect`), not XCTest.
 
 ## Conventions
 
