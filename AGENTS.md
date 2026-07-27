@@ -38,10 +38,13 @@ plain `String`, which is the whole seam an HTML library needs.
 
 HTML-library sugar is opt-in via `TailwindClassAttribute`
 (`Integration/TailwindClassAttribute.swift`): one static requirement,
-`tailwindClass(_:) -> Self`, with `.tailwind(_ style:)` supplied by a protocol
-extension. A consumer conditionally conforms its own element type (BrightDigit
-does this for Plot's `Node`/`Attribute` in `BrightDigitSite`). Do **not** add an
-HTML-library dependency back to this package.
+`` `class`(_:) -> Self ``, with `.tailwind(_ style:)` supplied by a protocol
+extension. The requirement is deliberately named for the factory HTML libraries
+already declare, so a conformance needs **no implementation** — BrightDigit's is
+literally `extension Node: TailwindClassAttribute where Context: HTMLContext {}`
+in `BrightDigitSite`. Keep it that way: if you ever rename this requirement to
+something library-specific, every consumer has to write a forwarding body. Do
+**not** add an HTML-library dependency back to this package.
 
 Note that a protocol cannot be retroactively conformed to another protocol, so
 element types exposing `class` as an *instance* modifier (Plot's `Component`)
@@ -50,7 +53,7 @@ a Swift limitation, not an oversight.
 
 Because there is no Foundation import, `String.replacingOccurrences` is
 unavailable; arbitrary-value space escaping goes through
-`escapingSpaces(_:)` in `Core/ArbitraryValue.swift`.
+`String.escapingSpaces` in `Core/String+ArbitraryValue.swift`.
 
 (The plain name `TailwindStyle` is the **seam protocol**, see below; `TW` is the
 typealias for the builder.)

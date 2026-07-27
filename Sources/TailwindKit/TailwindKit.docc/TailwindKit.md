@@ -79,17 +79,17 @@ TW.custom(property: "mask-type", value: "luminance").rendered
 
 TailwindKit depends on no HTML library — ``TailwindStyleBuilder/rendered`` is a plain `String`, so
 it works with any of them. Conform an attribute type to ``TailwindClassAttribute`` to gain the
-``TailwindClassAttribute/tailwind(_:)`` sugar; for [Plot](https://github.com/JohnSundell/Plot):
+``TailwindClassAttribute/tailwind(_:)`` sugar. The protocol's only requirement is
+``TailwindClassAttribute/class(_:)`` — the factory HTML libraries already declare — so the
+conformance is a declaration with an empty body. For
+[Plot](https://github.com/JohnSundell/Plot):
 
 ```swift
 import Plot
 import TailwindKit
 
-extension Node: TailwindClassAttribute where Context: HTMLContext {
-  public static func tailwindClass(_ className: String) -> Node {
-    .class(className)
-  }
-}
+extension Node: TailwindClassAttribute where Context: HTMLContext {}
+extension Attribute: TailwindClassAttribute where Context: HTMLContext {}
 
 Node.div(.tailwind(.flex.items(.center).gap(4)), .text("Hi"))
 // <div class="flex items-center gap-4">Hi</div>

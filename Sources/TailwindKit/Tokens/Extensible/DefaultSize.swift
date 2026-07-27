@@ -92,6 +92,6 @@ extension Size where Self == DefaultSize {
   /// A documented [arbitrary value](https://tailwindcss.com/docs/adding-custom-styles),
   /// e.g. `.arbitrary("137px")` on `.w` → `w-[137px]`. Spaces become underscores.
   public static func arbitrary(_ value: String) -> DefaultSize {
-    .init("[\(escapingSpaces(value))]")
+    .init("[\(value.escapingSpaces)]")
   }
 }

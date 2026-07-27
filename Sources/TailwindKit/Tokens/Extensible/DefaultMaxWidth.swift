@@ -71,6 +71,6 @@ extension MaxWidth where Self == DefaultMaxWidth {
   /// A documented arbitrary max-width, e.g. `.arbitrary("48rem")` →
   /// `max-w-[48rem]`. Spaces become underscores.
   public static func arbitrary(_ value: String) -> DefaultMaxWidth {
-    .init("[\(escapingSpaces(value))]")
+    .init("[\(value.escapingSpaces)]")
   }
 }

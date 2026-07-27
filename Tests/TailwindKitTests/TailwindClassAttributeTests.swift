@@ -37,12 +37,30 @@ import Testing
 /// of the seam: TailwindKit gains the `.tailwind(…)` sugar without depending on
 /// any HTML library.
 @Suite internal struct TailwindClassAttributeTests {
+  /// Stands in for an HTML library's attribute type.
+  ///
+  /// Declares only `class(_:)` — the same factory Plot's `Node` and `Attribute`
+  /// already have — and no member written for the protocol's sake. That is the
+  /// property the seam exists for: adopting it costs a declaration, not an
+  /// implementation.
   private struct StubAttribute: TailwindClassAttribute {
     let className: String
 
-    static func tailwindClass(_ className: String) -> StubAttribute {
+    // No `tailwindClass`-style shim: this *is* the library's own factory, and it
+    // satisfies the protocol as-is.
+    static func `class`(_ className: String) -> StubAttribute {
       StubAttribute(className: className)
     }
+  }
+
+  /// The conformance is satisfied entirely by the type's own `class(_:)`.
+  ///
+  /// The real assertion is that this file compiles at all: `StubAttribute`
+  /// declares no member named for the protocol, so if the requirement ever stops
+  /// matching the factory HTML libraries already provide, the conformance breaks
+  /// here rather than in a consumer.
+  @Test internal func conformanceNeedsNoImplementation() {
+    #expect(StubAttribute.class("manual").className == "manual")
   }
 
   /// The protocol extension forwards the rendered class string through the

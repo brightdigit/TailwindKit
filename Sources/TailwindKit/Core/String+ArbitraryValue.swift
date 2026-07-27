@@ -1,5 +1,5 @@
 //
-//  ArbitraryValue.swift
+//  String+ArbitraryValue.swift
 //  TailwindKit
 //
 //  Created by Leo Dion.
@@ -27,19 +27,19 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-/// Escapes the spaces in a Tailwind
-/// [arbitrary value](https://tailwindcss.com/docs/adding-custom-styles).
-///
-/// A class name cannot contain a space, so Tailwind writes arbitrary values with
-/// underscores and converts them back at build time: `[0_1px_2px_black]` is the
-/// shadow `0 1px 2px black`.
-///
-/// Written as a `map` over the characters rather than
-/// `replacingOccurrences(of:with:)` so that TailwindKit depends on no module at
-/// all — not even Foundation.
-///
-/// - Parameter value: The raw arbitrary value.
-/// - Returns: `value` with every space replaced by an underscore.
-internal func escapingSpaces(_ value: String) -> String {
-  String(value.map { $0 == " " ? "_" : $0 })
+extension String {
+  /// This Tailwind
+  /// [arbitrary value](https://tailwindcss.com/docs/adding-custom-styles) with
+  /// every space replaced by an underscore.
+  ///
+  /// A class name cannot contain a space, so Tailwind writes arbitrary values
+  /// with underscores and converts them back at build time: `[0_1px_2px_black]`
+  /// is the shadow `0 1px 2px black`.
+  ///
+  /// Written as a `map` over the characters rather than
+  /// `replacingOccurrences(of:with:)` so that TailwindKit depends on no module at
+  /// all — not even Foundation.
+  internal var escapingSpaces: String {
+    String(map { $0 == " " ? "_" : $0 })
+  }
 }

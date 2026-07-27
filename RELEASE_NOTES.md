@@ -33,8 +33,9 @@ Tailwind **v4-only** builder.
   per-family `.arbitrary(_:)` statics plus `arbitrary(_:value:)`,
   `arbitrary(_:variable:)` and `custom(property:value:)`.
 - **The package has no dependencies at all** — not even Foundation. HTML-library support is
-  opt-in through the `TailwindClassAttribute` seam: conform an element type to its single
-  `tailwindClass(_:)` requirement and the `.tailwind(_:)` sugar comes with it, with
+  opt-in through the `TailwindClassAttribute` seam: its single requirement is `class(_:)`,
+  the factory HTML libraries already declare, so conforming an element type takes an empty
+  extension — no forwarding body — and the `.tailwind(_:)` sugar comes with it, with
   leading-dot inference intact. Consumers own the conformance, so TailwindKit no longer
   depends on Plot.
 - Added `LICENSE` (MIT © BrightDigit); the package previously shipped with none.

@@ -87,18 +87,16 @@ The fluent surface is organized into one public capability protocol per CSS conc
 Node.div(.class(TW.flex.items(.center).gap(4).rendered), .text("Hi"))
 ```
 
-For nicer call sites, conform that library's attribute type to `TailwindClassAttribute`. The
-protocol has a single requirement, and the `.tailwind(_:)` sugar comes with it:
+For nicer call sites, conform that library's attribute type to `TailwindClassAttribute`. Its single
+requirement is `class(_:)` — the factory HTML libraries already declare — so the conformance is a
+declaration with **nothing to implement**, and the `.tailwind(_:)` sugar comes with it:
 
 ```swift
 import Plot
 import TailwindKit
 
-extension Node: TailwindClassAttribute where Context: HTMLContext {
-  public static func tailwindClass(_ className: String) -> Node {
-    .class(className)
-  }
-}
+extension Node: TailwindClassAttribute where Context: HTMLContext {}
+extension Attribute: TailwindClassAttribute where Context: HTMLContext {}
 
 Node.div(.tailwind(.flex.items(.center).gap(4)), .text("Hi"))
 // <div class="flex items-center gap-4">Hi</div>

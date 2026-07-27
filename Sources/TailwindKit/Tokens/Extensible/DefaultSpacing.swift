@@ -94,6 +94,6 @@ extension Spacing where Self == DefaultSpacing {
   /// e.g. `.arbitrary("13px")` on `.gap` → `gap-[13px]`. Spaces become
   /// underscores (Tailwind converts them back at build time).
   public static func arbitrary(_ value: String) -> DefaultSpacing {
-    .init("[\(escapingSpaces(value))]")
+    .init("[\(value.escapingSpaces)]")
   }
 }

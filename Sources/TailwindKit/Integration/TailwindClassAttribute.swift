@@ -34,15 +34,17 @@
 /// node type to this protocol is all that is needed to gain the ``tailwind(_:)``
 /// sugar below.
 ///
-/// A conformance forwards to whatever that library already calls a class
-/// attribute — for [Plot](https://github.com/JohnSundell/Plot):
+/// The single requirement is spelled ``class(_:)`` — the name HTML libraries
+/// already give this factory — so a conformance is a **declaration with no
+/// implementation**. For [Plot](https://github.com/JohnSundell/Plot), whose
+/// `Node` and `Attribute` both declare
+/// `public static func class(_ className: String) -> Self` under
+/// `Context: HTMLContext`, the existing member satisfies the requirement
+/// directly:
 ///
 /// ```swift
-/// extension Node: TailwindClassAttribute where Context: HTMLContext {
-///   public static func tailwindClass(_ className: String) -> Node {
-///     .class(className)
-///   }
-/// }
+/// extension Node: TailwindClassAttribute where Context: HTMLContext {}
+/// extension Attribute: TailwindClassAttribute where Context: HTMLContext {}
 /// ```
 ///
 /// One conditional conformance covers every context, and leading-dot inference
@@ -63,13 +65,13 @@ public protocol TailwindClassAttribute {
   ///
   /// - Parameter className: The space-separated class string to assign.
   /// - Returns: The created value.
-  static func tailwindClass(_ className: String) -> Self
+  static func `class`(_ className: String) -> Self
 }
 
 extension TailwindClassAttribute {
   /// Renders a ``TailwindStyleBuilder`` into this element's `class` attribute.
   ///
-  /// Sugar for ``tailwindClass(_:)`` applied to
+  /// Sugar for ``class(_:)`` applied to
   /// ``TailwindStyleBuilder/rendered``:
   ///
   /// ```swift
@@ -83,6 +85,6 @@ extension TailwindClassAttribute {
   /// - Parameter style: The Tailwind style to render.
   /// - Returns: The created value.
   public static func tailwind(_ style: TailwindStyleBuilder) -> Self {
-    .tailwindClass(style.rendered)
+    .class(style.rendered)
   }
 }
