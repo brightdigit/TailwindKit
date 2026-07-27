@@ -1,4 +1,4 @@
-![TailwindKit Logo](Sources/TailwindKit/TailwindKit.docc/Resources/TailwindKitLogo.png)
+![TailwindKit Logo](Sources/TailwindKit/TailwindKit.docc/Resources/TailwindKitLogo.svg)
 
 # TailwindKit
 
